@@ -14,7 +14,7 @@ export default function EngineersPage() {
   const { data, isLoading, error } = useQuery<Engineer[]>({
     queryKey: ["engineers"],
     queryFn: async () => {
-      const res = await api.get("/engineers");
+      const res = await api.get("/users?role=ENGINEER");
       return res.data;
     },
   });

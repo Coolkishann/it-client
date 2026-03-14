@@ -9,8 +9,10 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import MainLayout from "@/src/components/layout/MainLayout";
 import { Branch } from "@/src/types/branch";
+import { useAuthStore } from "@/src/store/authStore";
 
 export default function BranchesPage() {
+  const { user } = useAuthStore();
   const { data, isLoading, error } = useQuery<Branch[]>({
     queryKey: ["branches"],
     queryFn: async () => {
@@ -24,19 +26,23 @@ export default function BranchesPage() {
     { accessorKey: "address", header: "Address" },
     { accessorKey: "city", header: "City" },
     {
-      accessorKey: "customerId",
-      header: "Customer ID",
+      id: "customer",
+      header: "Customer",
+      cell: ({ row }) => row.original.customer?.name || "—"
     },
     {
       id: "actions",
       header: "Actions",
-      cell: ({ row }) => (
-        <Link href={`/dashboard/branches/${row.original.id}/edit`}>
-          <Button variant="ghost" size="sm">
-            Edit
-          </Button>
-        </Link>
-      ),
+      cell: ({ row }) => {
+        if (user?.role?.toUpperCase() === "ENGINEER") return null;
+        return (
+          <Link href={`/dashboard/branches/${row.original.id}/edit`}>
+            <Button variant="ghost" size="sm">
+              Edit
+            </Button>
+          </Link>
+        );
+      },
     },
   ];
 
@@ -45,12 +51,14 @@ export default function BranchesPage() {
       <section className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold">Branches</h2>
-          <Link href="/dashboard/branches/create">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              New Branch
-            </Button>
-          </Link>
+          {user?.role?.toUpperCase() !== "ENGINEER" && (
+            <Link href="/dashboard/branches/create">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                New Branch
+              </Button>
+            </Link>
+          )}
         </div>
 
         {isLoading && <p>Loading…</p>}

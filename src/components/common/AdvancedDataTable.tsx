@@ -49,7 +49,7 @@ export function AdvancedDataTable<TData>({
         // enable sorting on all columns by default
         enableSorting: true,
         // enable filtering on all columns by default
-        enableFiltering: true,
+        enableFilters: true,
         initialState: {
             pagination: { pageSize },
         },

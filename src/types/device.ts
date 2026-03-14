@@ -1,10 +1,31 @@
 // src/types/device.ts
 export interface Device {
-  id: string;
-  name: string;
+  id: number;
+  category: string;
+  company: string;
+  model: string;
   serialNumber: string;
-  status: "ACTIVE" | "FAULTY";
-  installationDate: string; // ISO string
-  customerId: string;
-  branchId: string;
+  ram?: string;
+  storage?: string;
+  os?: string;
+  motherboardName?: string;
+  motherboardSerial?: string;
+  processor?: string;
+  installationDate?: string;
+  warrantyExpiry?: string;
+  purchasePrice?: number;
+  purchaseOrderNumber?: string;
+  status: "ACTIVE" | "FAULTY" | "MAINTENANCE" | "RETIRED";
+  notes?: string;
+  branchId: number;
+  createdAt: string;
+  updatedAt: string;
+  branch?: {
+    id: number;
+    name: string;
+    customer?: {
+      id: number;
+      name: string;
+    };
+  };
 }

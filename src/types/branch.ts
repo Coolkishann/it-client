@@ -5,4 +5,8 @@ export interface Branch {
   address: string;
   city: string;
   customerId: string;
+  customer?: {
+    id: number;
+    name: string;
+  };
 }

@@ -16,26 +16,42 @@ import {
     LayoutDashboard
 } from "lucide-react";
 import { cn } from "@/src/lib/utils";
+import { useAuthStore } from "@/src/store/authStore";
 
 interface NavItem {
     href: string;
     label: string;
     icon: LucideIcon;
+    roles?: string[]; // Optional roles allowed to see this item
 }
 
 const navItems: NavItem[] = [
-    { href: "/dashboard/super-admin", label: "Overview", icon: Home },
-    { href: "/dashboard/customers", label: "Customers", icon: Users },
-    { href: "/dashboard/branches", label: "Branches", icon: Building },
-    { href: "/dashboard/devices", label: "Inventory", icon: Cpu },
-    { href: "/dashboard/service-calls", label: "Support Calls", icon: Phone },
-    { href: "/dashboard/engineers", label: "Team", icon: UserCheck },
-    { href: "/dashboard/reports", label: "Analytics", icon: BarChart },
+    { href: "/dashboard/overview", label: "Overview", icon: Home, roles: ["SUPER_ADMIN", "ADMIN", "ENGINEER"] },
+    { href: "/dashboard/customers", label: "Customers", icon: Users, roles: ["SUPER_ADMIN", "ADMIN"] },
+    { href: "/dashboard/branches", label: "Branches", icon: Building, roles: ["SUPER_ADMIN", "ADMIN"] },
+    { href: "/dashboard/devices", label: "Inventory", icon: Cpu, roles: ["SUPER_ADMIN", "ADMIN", "ENGINEER"] },
+    { href: "/dashboard/service-calls", label: "Support Calls", icon: Phone, roles: ["SUPER_ADMIN", "ADMIN", "ENGINEER"] },
+    { href: "/dashboard/engineers", label: "Team", icon: UserCheck, roles: ["SUPER_ADMIN", "ADMIN"] },
+    { href: "/dashboard/reports", label: "Analytics", icon: BarChart, roles: ["SUPER_ADMIN", "ADMIN"] },
 ];
 
 export default function Sidebar() {
     const pathname = usePathname();
+    const { user } = useAuthStore();
     
+    // Determine the dynamic dashboard path based on role
+    const getDashboardPath = () => {
+        const role = user?.role?.toUpperCase();
+        if (role === "SUPER_ADMIN") return "/dashboard/super-admin";
+        if (role === "ADMIN") return "/dashboard/admin";
+        return "/dashboard/engineer";
+    };
+
+    const filteredNavItems = navItems.filter(item => {
+        if (!item.roles) return true;
+        return user?.role && item.roles.includes(user.role.toUpperCase());
+    });
+
     return (
         <aside className="w-64 border-r border-border bg-card/50 backdrop-blur-md h-screen flex flex-col p-6 sticky top-0 overflow-y-auto">
             {/* Logo Section */}
@@ -50,12 +66,15 @@ export default function Sidebar() {
 
             {/* Navigation Section */}
             <nav className="flex-1 space-y-2">
-                {navItems.map((item) => {
-                    const isActive = pathname === item.href;
+                {filteredNavItems.map((item) => {
+                    // Normalize href for "Overview" to match role-specific dashboards
+                    const itemHref = item.href === "/dashboard/overview" ? getDashboardPath() : item.href;
+                    const isActive = pathname === itemHref;
+                    
                     return (
                         <Link
                             key={item.href}
-                            href={item.href}
+                            href={itemHref}
                             className={cn(
                                 "flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group",
                                 isActive 
