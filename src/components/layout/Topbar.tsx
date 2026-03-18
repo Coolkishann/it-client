@@ -29,14 +29,14 @@ export default function Topbar() {
       <div className="flex items-center gap-4 md:gap-6">
         
         {/* Notifications */}
-        <Button
+        {/* <Button
           variant="ghost"
           size="icon"
           className="relative text-muted-foreground hover:text-primary hover:bg-secondary rounded-xl transition-all"
         >
           <Bell className="h-5 w-5" />
           <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-destructive animate-pulse" />
-        </Button>
+        </Button> */}
 
         {/* Theme Toggle */}
         <Button
