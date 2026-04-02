@@ -2,7 +2,8 @@
 import axios from "axios";
 
 export const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/",
+    baseURL: process.env.NEXT_PUBLIC_API_URL || "https://it-service-yzt6.onrender.com",
+    // baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/",
 });
 
 // Attach JWT token to every request if present
